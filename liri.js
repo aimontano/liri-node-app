@@ -5,13 +5,12 @@ const axios = require('axios');
 
 var spotify = new Spotify(keys.spotify);
 
-let action = process.argv[2];
-let input = process.argv[3];
+let action = process.argv[2]; // action input
+let input = process.argv[3]; // song, song input
 
-let artist = input;
-
+// Funcion logs name, location, time 
 const getVenueInfo = artist => {
-	let searchQuery = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+	let searchQuery = "https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp";
 
 	axios.get(searchQuery).then(response => {
 		let venues = [];
@@ -33,7 +32,7 @@ const getSpotifySong = song => {
 	spotify.search({
 		type: "track",
 		query: song,
-		limit: 20
+		limit: 10
 	}, (err, data) => {
 		if(err)
 			console.log(err)
