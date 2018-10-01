@@ -3,6 +3,7 @@ const keys = require('./keys');
 const Spotify = require('node-spotify-api');
 const axios = require('axios');
 const imdb = require('imdb-api');
+const fs = require('fs');
 
 var spotify = new Spotify(keys.spotify);
 
@@ -102,6 +103,16 @@ const getSpotifySong = song => {
 	});
 }
 
+// do-what-it-says
+const doWhatItSays = () => {
+	fs.readFile('random.txt', 'utf8', (err, data) => {
+		if(err)
+			console.log(err)
+
+		let song = data.split(',')[1]
+		getSpotifySong(song);
+	});
+}
 
 
 switch (action) {
@@ -113,4 +124,8 @@ switch (action) {
 		break;
 	case 'movie-this':
 		getMovies(input);
+		break;
+	case 'do-what-it-says':
+		doWhatItSays();
+		break;
 }
