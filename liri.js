@@ -114,6 +114,18 @@ const doWhatItSays = () => {
 	});
 }
 
+// append to file
+const appendLog = (command, input, data) => {
+	let logCommand = "Command: -> " + command;
+	let logInput = "Input: -> " + input;
+	let logData = "Data: -> " + data;
+
+	let logString = logCommand + "\n" + logInput + "\n" + logData
+
+	fs.appendFile('log.txt', )
+}
+
+appendLog(action, input, "Working...");
 
 switch (action) {
 	case "spotify-this-song":
