@@ -4,6 +4,7 @@ const Spotify = require('node-spotify-api');
 const axios = require('axios');
 const imdb = require('imdb-api');
 const fs = require('fs');
+const moment = require('moment');
 
 var spotify = new Spotify(keys.spotify);
 
@@ -92,6 +93,8 @@ const getVenueInfo = artist => {
 			let country = response.data[i].venue.country; // country
 			let region = response.data[i].venue.region; // region
 			let time = response.data[i].datetime; // time
+			// converts time to format -> Day name, Month, day of month, hour:minute am/pm
+			let date = moment(time).format("dddd MMM Do, h:mm a"); 
 
 			if(!region) // if region/state not available
 				region = "Not available";
@@ -101,7 +104,7 @@ const getVenueInfo = artist => {
 			logString += "--> city: " + city + "\n";
 			logString += "--> country: " + country + "\n";
 			logString += "--> region: " + region + "\n";
-			logString += "--> time: " + time + "\n";
+			logString += "--> date: " + date + "\n";
 
 			console.log("\n***************************************")
 			console.log("Result #" + (i + 1))
