@@ -10,6 +10,8 @@ var spotify = new Spotify(keys.spotify);
 let action = process.argv[2]; // action input
 let input = process.argv[3]; // song, song, movie input
 
+let logString = ""; // variable stores what will be printed/logged to file
+
 const getMovies = movie => {
 	imdb.search({
 		name: movie
@@ -17,43 +19,61 @@ const getMovies = movie => {
 		apiKey: keys.omdb.key
 	}).then(response => {
 		response.results.forEach(item => {
-
 			imdb.get({id: item.imdbid}, {apiKey: keys.omdb.key}).then(result => {
-				console.log("\n*******************************************************")
-
 			  // * Title of the movie.
-			  console.log("--> Movie title: " + result.title);
+			  let movieTitle = result.title;
 			  // * Year the movie came out.
-			  if(result.year)
-			  	console.log("--> Movie released year: " + result.year);
-			  else
-			  	console.log("--> Movie released year: " + result._year_data);
+			  let movieYear = result.year;
+
+			 	// if doesn't have the default result.year for year
+			  if(!movieYear) {
+			  	movieYear = result._year_data;
+			  }
+			  
 			  // * IMDB Rating of the movie.
+			  let imdbRating = "Not available"; // set to no rating
+
+			  // * Rotten Tomatoes Rating of the movie.
+			  let rottenTomatoes = "Not available"; // set to no rating
+
+			  // check if the movies has any ratings 
 			  if(result.ratings) {
 			  	result.ratings.forEach(item => {
 			  		if(item.Source === "Internet Movie Database")
-			  			console.log("--> IMDB Ratings: " + item.Value);
-			  		else 
-			  			console.log("--> No IMDB Ratings");
-			  		// * Rotten Tomatoes Rating of the movie.
+			  			imdbRating = item.Value;
+			  		
 			  		if(item.Sourse === "Rotten Tomatoes")
-			  			console.log("--> Rotten Tomatoes Rating: " + item.Value);
-			  		else 
-			  			console.log("--> No Rotten Tomatoes Ratings");
+			  			rottenTomatoes = item.Value;
 			  	});
 			  }
-			  
+
 			  // * Country where the movie was produced.
-			  console.log("--> Country produced: " + result.country);
-
+			  let countryProd = result.country;
 			  // * Language of the movie.
-			  console.log("--> Movie language(s): " + result.languages);
-
+			  let languages = result.languages;
 			  // * Plot of the movie.
-			  console.log("--> Movie plot: " + result.plot);
+			  let plot = result.plot;
+
+			  if(plot == 'N/A') // if no rating 
+			  	plot = "Not available";
 
 			  // * Actors in the movie.
-			  console.log("--> Movie Actors: " + result.actors);
+			  let actors = result.actors;
+
+			  logString = "--> Movie title: " + movieTitle + "\n";
+			  logString += "--> Movie released year: " + movieYear + "\n";
+			  logString += "--> IMDB Ratings: " + imdbRating + "\n";
+			  logString += "--> Rotten Tomatoes Rating: " + rottenTomatoes + "\n";
+			  logString += "--> Country produced: " + countryProd + "\n";
+			  logString += "--> Movie language(s): " + languages + "\n";
+			  logString += "--> Movie plot: " + plot + "\n";
+			  logString += "--> Movie Actors: " + actors + "\n";
+
+			  console.log("\n*******************************************************");
+			  console.log(logString);
+
+			  appendLog(action, input, logString);
+
 			}).catch(console.log);
 
 		});
@@ -65,15 +85,29 @@ const getVenueInfo = artist => {
 	let searchQuery = "https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp";
 
 	axios.get(searchQuery).then(response => {
-		let venues = [];
-
+		// loops through each result 
 		for(let i = 0; i < response.data.length; i++) {
+			let name = response.data[i].venue.name; // venue name
+			let city = response.data[i].venue.city; // city
+			let country = response.data[i].venue.country; // country
+			let region = response.data[i].venue.region; // region
+			let time = response.data[i].datetime; // time
+
+			if(!region) // if region/state not available
+				region = "Not available";
+
+			logString = "Venue Information:" + "\n";
+			logString += "--> name: " + name + "\n"; 
+			logString += "--> city: " + city + "\n";
+			logString += "--> country: " + country + "\n";
+			logString += "--> region: " + region + "\n";
+			logString += "--> time: " + time + "\n";
+
 			console.log("\n***************************************")
 			console.log("Result #" + (i + 1))
-			console.log("Venue Information:")
-			console.log("--> name: " + response.data[i].venue.name);
-			console.log("--> location: " + response.data[i].venue.city + ", " + response.data[i].venue.region);
-			console.log("--> time: " + response.data[i].datetime);
+			console.log(logString);
+
+			appendLog(action, input, logString);
 		}
 	});
 }
@@ -88,17 +122,24 @@ const getSpotifySong = song => {
 	}, (err, data) => {
 		if(err)
 			console.log(err)
-
+		// loop through each result
 		for(let i = 0; i < data.tracks.items.length; i++){
+			let artists = data.tracks.items[i].album.artists[0].name // get artist name
+			let songName = data.tracks.items[i].album.name; // song name
+			let preview = data.tracks.items[i].preview_url; // preview url
 
-			let artists = data.tracks.items[i].album.artists[0].name
-			let songName = data.tracks.items[i].album.name;
-			let preview = data.tracks.items[i].preview_url;
-			console.log("\n*************************************")
+			if(!preview) // if no preview url
+				preview = "Not available";
+
+			logString = "--> Artist: " + artists + "\n";
+			logString += "--> Song name: " + songName  + "\n";
+			logString += "--> Preview URL: " + preview + "\n";
+
+			console.log("\n*************************************");
 			console.log("Result: #" +  (i + 1));
-			console.log("--> Artist: " + artists);
-			console.log("--> Song name: " + songName);
-			console.log("--> Preview url: " + preview);
+			console.log(logString);
+
+			appendLog(action, song, logString);
 		}
 	});
 }
@@ -112,6 +153,21 @@ const doWhatItSays = () => {
 		let song = data.split(',')[1]
 		getSpotifySong(song);
 	});
+}
+
+// append to file
+const appendLog = (command, input, data) => {
+	let logCommand = "Command: " + command; 
+	let logInput = "Input: " + input;
+	let logData = "Data: \n" + data;
+
+	logString = "\n**********************************\n";
+	logString += logCommand + "\n" + logInput + "\n" + logData;
+
+	fs.appendFile('log.txt', logString, err => {
+		if(err) 
+			console.log("error");
+	})
 }
 
 
