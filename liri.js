@@ -85,15 +85,29 @@ const getVenueInfo = artist => {
 	let searchQuery = "https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp";
 
 	axios.get(searchQuery).then(response => {
-		let venues = [];
-
+		// loops through each result 
 		for(let i = 0; i < response.data.length; i++) {
+			let name = response.data[i].venue.name; // venue name
+			let city = response.data[i].venue.city; // city
+			let country = response.data[i].venue.country; // country
+			let region = response.data[i].venue.region; // region
+			let time = response.data[i].datetime; // time
+
+			if(!region) // if region/state not available
+				region = "Not available";
+
+			logString = "Venue Information:" + "\n";
+			logString += "--> name: " + name + "\n"; 
+			logString += "--> city: " + city + "\n";
+			logString += "--> country: " + country + "\n";
+			logString += "--> region: " + region + "\n";
+			logString += "--> time: " + time + "\n";
+
 			console.log("\n***************************************")
 			console.log("Result #" + (i + 1))
-			console.log("Venue Information:")
-			console.log("--> name: " + response.data[i].venue.name);
-			console.log("--> location: " + response.data[i].venue.city + ", " + response.data[i].venue.region);
-			console.log("--> time: " + response.data[i].datetime);
+			console.log(logString);
+
+			appendLog(action, input, logString);
 		}
 	});
 }
@@ -108,22 +122,22 @@ const getSpotifySong = song => {
 	}, (err, data) => {
 		if(err)
 			console.log(err)
-
+		// loop through each result
 		for(let i = 0; i < data.tracks.items.length; i++){
+			let artists = data.tracks.items[i].album.artists[0].name // get artist name
+			let songName = data.tracks.items[i].album.name; // song name
+			let preview = data.tracks.items[i].preview_url; // preview url
 
-			let artists = data.tracks.items[i].album.artists[0].name
-			let songName = data.tracks.items[i].album.name;
-			let preview = data.tracks.items[i].preview_url;
+			if(!preview) // if no preview url
+				preview = "Not available";
+
+			logString = "--> Artist: " + artists + "\n";
+			logString += "--> Song name: " + songName  + "\n";
+			logString += "--> Preview URL: " + preview + "\n";
+
 			console.log("\n*************************************");
 			console.log("Result: #" +  (i + 1));
-			console.log("--> Artist: " + artists);
-			console.log("--> Song name: " + songName);
-			console.log("--> Preview url: " + preview);
-
-			// let logString = artists + "\n" + songName + "\n" + preview + "\n";
-			let logString = "--> Artist: " + artists + "\n";
-					logString += "--> Song name: " + songName  + "\n";
-					logString += "--> Preview URL: " + preview + "\n";
+			console.log(logString);
 
 			appendLog(action, song, logString);
 		}
@@ -143,18 +157,16 @@ const doWhatItSays = () => {
 
 // append to file
 const appendLog = (command, input, data) => {
-	let logCommand = "Command: " + command;
+	let logCommand = "Command: " + command; 
 	let logInput = "Input: " + input;
 	let logData = "Data: \n" + data;
 
-	logString = "**********************************\n";
-			logString += logCommand + "\n" + logInput + "\n" + logData;
+	logString = "\n**********************************\n";
+	logString += logCommand + "\n" + logInput + "\n" + logData;
 
 	fs.appendFile('log.txt', logString, err => {
 		if(err) 
 			console.log("error");
-		else 
-			console.log("Content Added!");
 	})
 }
 
