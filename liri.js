@@ -10,6 +10,8 @@ var spotify = new Spotify(keys.spotify);
 let action = process.argv[2]; // action input
 let input = process.argv[3]; // song, song, movie input
 
+let logString = ""; // variable stores what will be printed/logged to file
+
 const getMovies = movie => {
 	imdb.search({
 		name: movie
@@ -17,10 +19,7 @@ const getMovies = movie => {
 		apiKey: keys.omdb.key
 	}).then(response => {
 		response.results.forEach(item => {
-			let logString = ""; // variable contains what will be stored in log file
 			imdb.get({id: item.imdbid}, {apiKey: keys.omdb.key}).then(result => {
-				console.log("\n*******************************************************")
-
 			  // * Title of the movie.
 			  let movieTitle = result.title;
 			  // * Year the movie came out.
@@ -32,10 +31,10 @@ const getMovies = movie => {
 			  }
 			  
 			  // * IMDB Rating of the movie.
-			  let imdbRating = null; // set to no rating
+			  let imdbRating = "Not available"; // set to no rating
 
 			  // * Rotten Tomatoes Rating of the movie.
-			  let rottenTomatoes = null; // set to no rating
+			  let rottenTomatoes = "Not available"; // set to no rating
 
 			  // check if the movies has any ratings 
 			  if(result.ratings) {
@@ -54,18 +53,25 @@ const getMovies = movie => {
 			  let languages = result.languages;
 			  // * Plot of the movie.
 			  let plot = result.plot;
+
+			  if(plot == 'N/A')
+			  	plot = "Not available";
+
 			  // * Actors in the movie.
 			  let actors = result.actors;
 
+			  logString = "--> Movie title: " + movieTitle + "\n";
+			  logString += "--> Movie released year: " + movieYear + "\n";
+			  logString += "--> IMDB Ratings: " + imdbRating + "\n";
+			  logString += "--> Rotten Tomatoes Rating: " + rottenTomatoes + "\n";
+			  logString += "--> Country produced: " + countryProd + "\n";
+			  logString += "--> Movie language(s): " + languages + "\n";
+			  logString += "--> Movie plot: " + plot + "\n";
+			  logString += "--> Movie Actors: " + actors + "\n";
 
-			  console.log("--> Movie title: " + movieTitle);
-			  console.log("--> Movie released year: " + movieYear);
-			  console.log("--> IMDB Ratings: " + imdbRating);
-			  console.log("--> Rotten Tomatoes Rating: " + rottenTomatoes);
-			  console.log("--> Country produced: " + country);
-			  console.log("--> Movie language(s): " + languages);
-			  console.log("--> Movie plot: " + plot);
-			  console.log("--> Movie Actors: " + actors);
+			  console.log("\n*******************************************************");
+			  console.log(logString);
+
 			}).catch(console.log);
 
 		});
@@ -139,7 +145,7 @@ const appendLog = (command, input, data) => {
 	let logInput = "Input: " + input;
 	let logData = "Data: \n" + data;
 
-	let logString = "**********************************\n";
+	logString = "**********************************\n";
 			logString += logCommand + "\n" + logInput + "\n" + logData;
 
 	fs.appendFile('log.txt', logString, err => {
