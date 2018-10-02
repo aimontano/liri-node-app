@@ -17,43 +17,55 @@ const getMovies = movie => {
 		apiKey: keys.omdb.key
 	}).then(response => {
 		response.results.forEach(item => {
-
+			let logString = ""; // variable contains what will be stored in log file
 			imdb.get({id: item.imdbid}, {apiKey: keys.omdb.key}).then(result => {
 				console.log("\n*******************************************************")
 
 			  // * Title of the movie.
-			  console.log("--> Movie title: " + result.title);
+			  let movieTitle = result.title;
 			  // * Year the movie came out.
-			  if(result.year)
-			  	console.log("--> Movie released year: " + result.year);
-			  else
-			  	console.log("--> Movie released year: " + result._year_data);
+			  let movieYear = result.year;
+
+			 	// if doesn't have the default result.year for year
+			  if(!movieYear) {
+			  	movieYear = result._year_data;
+			  }
+			  
 			  // * IMDB Rating of the movie.
+			  let imdbRating = null; // set to no rating
+
+			  // * Rotten Tomatoes Rating of the movie.
+			  let rottenTomatoes = null; // set to no rating
+
+			  // check if the movies has any ratings 
 			  if(result.ratings) {
 			  	result.ratings.forEach(item => {
 			  		if(item.Source === "Internet Movie Database")
-			  			console.log("--> IMDB Ratings: " + item.Value);
-			  		else 
-			  			console.log("--> No IMDB Ratings");
-			  		// * Rotten Tomatoes Rating of the movie.
+			  			imdbRating = item.Value;
+			  		
 			  		if(item.Sourse === "Rotten Tomatoes")
-			  			console.log("--> Rotten Tomatoes Rating: " + item.Value);
-			  		else 
-			  			console.log("--> No Rotten Tomatoes Ratings");
+			  			rottenTomatoes = item.Value;
 			  	});
 			  }
-			  
+
 			  // * Country where the movie was produced.
-			  console.log("--> Country produced: " + result.country);
-
+			  let countryProd = result.country;
 			  // * Language of the movie.
-			  console.log("--> Movie language(s): " + result.languages);
-
+			  let languages = result.languages;
 			  // * Plot of the movie.
-			  console.log("--> Movie plot: " + result.plot);
-
+			  let plot = result.plot;
 			  // * Actors in the movie.
-			  console.log("--> Movie Actors: " + result.actors);
+			  let actors = result.actors;
+
+
+			  console.log("--> Movie title: " + movieTitle);
+			  console.log("--> Movie released year: " + movieYear);
+			  console.log("--> IMDB Ratings: " + imdbRating);
+			  console.log("--> Rotten Tomatoes Rating: " + rottenTomatoes);
+			  console.log("--> Country produced: " + country);
+			  console.log("--> Movie language(s): " + languages);
+			  console.log("--> Movie plot: " + plot);
+			  console.log("--> Movie Actors: " + actors);
 			}).catch(console.log);
 
 		});
