@@ -54,7 +54,7 @@ const getMovies = movie => {
 			  // * Plot of the movie.
 			  let plot = result.plot;
 
-			  if(plot == 'N/A')
+			  if(plot == 'N/A') // if no rating 
 			  	plot = "Not available";
 
 			  // * Actors in the movie.
@@ -71,6 +71,8 @@ const getMovies = movie => {
 
 			  console.log("\n*******************************************************");
 			  console.log(logString);
+
+			  appendLog(action, input, logString);
 
 			}).catch(console.log);
 
