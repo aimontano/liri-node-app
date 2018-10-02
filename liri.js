@@ -94,11 +94,18 @@ const getSpotifySong = song => {
 			let artists = data.tracks.items[i].album.artists[0].name
 			let songName = data.tracks.items[i].album.name;
 			let preview = data.tracks.items[i].preview_url;
-			console.log("\n*************************************")
+			console.log("\n*************************************");
 			console.log("Result: #" +  (i + 1));
 			console.log("--> Artist: " + artists);
 			console.log("--> Song name: " + songName);
 			console.log("--> Preview url: " + preview);
+
+			// let logString = artists + "\n" + songName + "\n" + preview + "\n";
+			let logString = "--> Artist: " + artists + "\n";
+					logString += "--> Song name: " + songName  + "\n";
+					logString += "--> Preview URL: " + preview + "\n";
+
+			appendLog(action, song, logString);
 		}
 	});
 }
@@ -116,16 +123,21 @@ const doWhatItSays = () => {
 
 // append to file
 const appendLog = (command, input, data) => {
-	let logCommand = "Command: -> " + command;
-	let logInput = "Input: -> " + input;
-	let logData = "Data: -> " + data;
+	let logCommand = "Command: " + command;
+	let logInput = "Input: " + input;
+	let logData = "Data: \n" + data;
 
-	let logString = logCommand + "\n" + logInput + "\n" + logData
+	let logString = "**********************************\n";
+			logString += logCommand + "\n" + logInput + "\n" + logData;
 
-	fs.appendFile('log.txt', )
+	fs.appendFile('log.txt', logString, err => {
+		if(err) 
+			console.log("error");
+		else 
+			console.log("Content Added!");
+	})
 }
 
-appendLog(action, input, "Working...");
 
 switch (action) {
 	case "spotify-this-song":
