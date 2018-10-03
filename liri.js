@@ -128,7 +128,7 @@ const getSpotifySong = song => {
 		// loop through each result
 		for(let i = 0; i < data.tracks.items.length; i++){
 			let artists = data.tracks.items[i].album.artists[0].name // get artist name
-			let songName = data.tracks.items[i].album.name; // song name
+			let songName = data.tracks.items[i].name; // song name
 			let preview = data.tracks.items[i].preview_url; // preview url
 
 			if(!preview) // if no preview url
