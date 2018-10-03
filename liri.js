@@ -86,31 +86,36 @@ const getVenueInfo = artist => {
 	let searchQuery = "https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp";
 
 	axios.get(searchQuery).then(response => {
-		// loops through each result 
-		for(let i = 0; i < response.data.length; i++) {
-			let name = response.data[i].venue.name; // venue name
-			let city = response.data[i].venue.city; // city
-			let country = response.data[i].venue.country; // country
-			let region = response.data[i].venue.region; // region
-			let time = response.data[i].datetime; // time
-			// converts time to format -> Day name, Month, day of month, hour:minute am/pm
-			let date = moment(time).format("dddd MMM Do, h:mm a"); 
+		// If results
+		if(response.data.length > 0) {
+			// loops through each result 
+			for(let i = 0; i < response.data.length; i++) {
+				let name = response.data[i].venue.name; // venue name
+				let city = response.data[i].venue.city; // city
+				let country = response.data[i].venue.country; // country
+				let region = response.data[i].venue.region; // region
+				let time = response.data[i].datetime; // time
+				// converts time to format -> Day name, Month, day of month, hour:minute am/pm
+				let date = moment(time).format("dddd MMM Do, h:mm a"); 
 
-			if(!region) // if region/state not available
-				region = "Not available";
+				if(!region) // if region/state not available
+					region = "Not available";
 
-			logString = "Venue Information:" + "\n";
-			logString += "--> name: " + name + "\n"; 
-			logString += "--> city: " + city + "\n";
-			logString += "--> country: " + country + "\n";
-			logString += "--> region: " + region + "\n";
-			logString += "--> date: " + date + "\n";
+				logString = "Venue Information:" + "\n";
+				logString += "--> name: " + name + "\n"; 
+				logString += "--> city: " + city + "\n";
+				logString += "--> country: " + country + "\n";
+				logString += "--> region: " + region + "\n";
+				logString += "--> date: " + date + "\n";
 
-			console.log("\n***************************************")
-			console.log("Result #" + (i + 1))
-			console.log(logString);
+				console.log("\n***************************************")
+				console.log("Result #" + (i + 1))
+				console.log(logString);
 
-			appendLog(action, input, logString);
+				appendLog(action, input, logString);
+			}
+		} else { // otherwise
+			console.log("No Results");
 		}
 	});
 }
