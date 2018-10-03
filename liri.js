@@ -131,7 +131,7 @@ const getSpotifySong = song => {
 		if(err)
 			console.log(err)
 
-		if(data.tracks.length > 0) {
+		if(data.tracks.items.length > 0) {
 			// loop through each result
 			for(let i = 0; i < data.tracks.items.length; i++){
 				let artists = data.tracks.items[i].album.artists[0].name // get artist name
