@@ -75,11 +75,11 @@ const getMovies = movie => {
 
 			  appendLog(action, input, logString);
 
-			}).catch(console.log);
+			}).catch(e => console.log(e.message));
 
 		});
 
-	}).catch(console.log);
+	}).catch(e => console.log(e.message));
 }
 // Funcion logs name, location, time 
 const getVenueInfo = artist => {
@@ -130,24 +130,29 @@ const getSpotifySong = song => {
 	}, (err, data) => {
 		if(err)
 			console.log(err)
-		// loop through each result
-		for(let i = 0; i < data.tracks.items.length; i++){
-			let artists = data.tracks.items[i].album.artists[0].name // get artist name
-			let songName = data.tracks.items[i].name; // song name
-			let preview = data.tracks.items[i].preview_url; // preview url
 
-			if(!preview) // if no preview url
-				preview = "Not available";
+		if(data.tracks.length > 0) {
+			// loop through each result
+			for(let i = 0; i < data.tracks.items.length; i++){
+				let artists = data.tracks.items[i].album.artists[0].name // get artist name
+				let songName = data.tracks.items[i].name; // song name
+				let preview = data.tracks.items[i].preview_url; // preview url
 
-			logString = "--> Artist: " + artists + "\n";
-			logString += "--> Song name: " + songName  + "\n";
-			logString += "--> Preview URL: " + preview + "\n";
+				if(!preview) // if no preview url
+					preview = "Not available";
 
-			console.log("\n*************************************");
-			console.log("Result: #" +  (i + 1));
-			console.log(logString);
+				logString = "--> Artist: " + artists + "\n";
+				logString += "--> Song name: " + songName  + "\n";
+				logString += "--> Preview URL: " + preview + "\n";
 
-			appendLog(action, song, logString);
+				console.log("\n*************************************");
+				console.log("Result: #" +  (i + 1));
+				console.log(logString);
+
+				appendLog(action, song, logString);
+			}
+		} else {
+			console.log("No songs found!");
 		}
 	});
 }
