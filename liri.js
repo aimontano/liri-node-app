@@ -1,4 +1,5 @@
 const liri = require('./liriFunctions.js'); // import all the functions 
+const liriInquirer = require('./liriInquirer.js');
 
 let action = process.argv[2]; // action input
 let input = process.argv[3]; // song, song, movie input
@@ -21,6 +22,7 @@ switch (action) {
 		liri.displayCommands();
 		break;
 	default:
-		console.log("You must enter a valid command. To see valid commands type (node liri.js help)");
+		liriInquirer.getUserRequest();
+		// console.log("You must enter a valid command. To see valid commands type (node liri.js help)");
 		break;
 }
