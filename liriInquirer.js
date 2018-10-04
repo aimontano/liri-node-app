@@ -14,6 +14,32 @@ const getSong = () => {
 	})
 }
 
+const getMovie = () => {
+	inquirer.prompt([
+		{
+			type: 'input',
+			name: 'movie',
+			message: "What movie would you like to search?"
+		}
+	]).then(response => {
+		let movie = response.movie;
+		liri.getMovies(movie);
+	})
+}
+
+const getVenue = () => {
+	inquirer.prompt([
+		{
+			type: 'input',
+			name: 'venue',
+			message: "What band/artist would you like to search?"
+		}
+	]).then(response => {
+		let venue = response.movie;
+		liri.getVenueInfo(venue);
+	})
+}
+
 const getUserRequest = () => {
 	inquirer.prompt([
 		{
@@ -36,9 +62,11 @@ const getUserRequest = () => {
 				break;
 			case 'Search for movie information':
 				console.log("Getting movie information...");
+				getMovie();
 				break;
 			case 'Search for bands in town':
 				console.log("Searching for band...");
+				getVenue();
 				break;
 		}
 
