@@ -1,43 +1,28 @@
 const liri = require('./liriFunctions.js');
 const inquirer = require("inquirer");
 
-const getSong = () => {
+// create a functions that allows to get user information
+const getInfo = type => {
 	inquirer.prompt([
 		{
 			type: 'input',
-			name: 'song',
-			message: "What song would you like to search?"
+			name: 'search',
+			message: "What " + type + " would you like to search?"
 		}
 	]).then(response => {
-		let song = response.song;
-		liri.getSpotifySong(song);
-	})
-}
-
-const getMovie = () => {
-	inquirer.prompt([
-		{
-			type: 'input',
-			name: 'movie',
-			message: "What movie would you like to search?"
+		let search = response.search;
+		switch (type) {
+			case 'song':
+				liri.getSpotifySong(search);
+				break;
+			case 'band/artist':
+				liri.getVenueInfo(search);
+				break;
+			case 'movie':
+				liri.getMovies(search);
+				break;
 		}
-	]).then(response => {
-		let movie = response.movie;
-		liri.getMovies(movie);
-	})
-}
-
-const getVenue = () => {
-	inquirer.prompt([
-		{
-			type: 'input',
-			name: 'venue',
-			message: "What band/artist would you like to search?"
-		}
-	]).then(response => {
-		let venue = response.movie;
-		liri.getVenueInfo(venue);
-	})
+	})	
 }
 
 const getUserRequest = () => {
@@ -58,15 +43,15 @@ const getUserRequest = () => {
 		switch (command) {
 			case 'Search a song in Spotify':
 				console.log("You will search a song in Spotify");
-				getSong();
+				getInfo('song');
 				break;
 			case 'Search for movie information':
 				console.log("Getting movie information...");
-				getMovie();
+				getInfo('movie')
 				break;
 			case 'Search for bands in town':
 				console.log("Searching for band...");
-				getVenue();
+				getInfo('band/artist');
 				break;
 		}
 
